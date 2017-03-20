@@ -2,9 +2,11 @@ var app=require('express')();
 var express = require('express');
 var http=require('http').Server(app);
 var io=require('socket.io')(http);
+var port=process.env.PORT || 3000;
 app.get('/', function(req,res){
 	res.sendFile(__dirname +'/index.html');
 });
+
 var MongoClient = require('mongodb').MongoClient
   , assert = require('assert');
 
@@ -135,6 +137,6 @@ socket.on("outliers delete",function(data){
  });//ending of mongoclient
 });//ending of socket.on
 });//ending of io.on
-http.listen(3000, function(){
-	console.log('and here we are, *:3000');
+http.listen(port, function(){
+	console.log('and here we are, *:%d'port);
 });
