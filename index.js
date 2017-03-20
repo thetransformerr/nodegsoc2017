@@ -49,16 +49,18 @@ socket.on('outliers query',function(data){
    if(err) throw err;
    assert.equal(null, err);
    console.log("Connected successfully to server for outliers query");
-   var count=0;
-   var q1={};//creating JSON for query
+  var count=0;
+   var q1={};
    q1['length']={};
    q1.length['$gt']=max;
    var q2={};
    q2['length']={};
+   q2.length['$lt']=min;
    var q=[];
    q[0]=q1;
    q[1]=q2;
-   tracks.find({$or:q},{length:1,name:1,description:1}).limit(100).sort({length:1}).toArray(function(err,docs){
+   console.log(q);
+   tracks.find({$or: q },{length:1,name:1,description:1}).limit(100).sort({length:1}).toArray(function(err,docs){
      if(err) throw err;
      docs.forEach(function (docs) {
         io.sockets.emit('outliers',{length:docs.length , name:docs.name, description:docs.description});
@@ -70,13 +72,23 @@ MongoClient.connect(url, function(err, db) {
    var tracks = db.collection('tracks');
    if(err) throw err;
    assert.equal(null, err);
-   console.log("Connected successfully to server for outliers query");
+   console.log("Connected successfully to server for outliers count");
    var count=0;
    //creating JSON for query
-   var q1={};q1['length']={};q1.length['$gt']=max;var q2={};q2['length']={};var q=[];q[0]=q1;q[1]=q2;
-   tracks.find({$or:q},{length:1,name:1,description:1}).count().then(function(err,count){
+   var count=0;
+   var q1={};
+   q1['length']={};
+   q1.length['$gt']=max;
+   var q2={};
+   q2['length']={};
+   q2.length['$lt']=min;
+   var q=[];
+   q[0]=q1;
+   q[1]=q2;
+   tracks.find({$or: q}).count().then(function(count){
       if (err) throw err;
       io.sockets.emit('outliers count',count);
+      console.log(count);
       db.close();
     });//ending of outliers count
    });//ending of mongoclient
@@ -105,18 +117,20 @@ socket.on("outliers delete",function(data){
    var q=[];
    q[0]=q1;
    q[1]=q2;
-   tracks.deleteMany({$or:q},{length:1,name:1,description:1}).then(function(err,docs){
-     if(err) throw err;
-     io.sockets.emit('delete',docs);
+   tracks.deleteMany({$or:q},{length:1,name:1,description:1}).then(function(docs){
+    io.sockets.emit('delete',docs);
+
     });//ending of tracks.deletemany
  });//ending of mongoclient
  MongoClient.connect(url, function(err, db) {
    var tracks = db.collection('tracks');
    if(err) throw err;
    assert.equal(null, err);
-   tracks.count().then(function(err,count){
-   if(err) throw err;
+   console.log("Connected successfully to server for count");
+   tracks.count().then(function(count){
+   
    io.sockets.emit('remaining',count);
+   console.log(count);
   });//ending of remaining count
  });//ending of mongoclient
 });//ending of socket.on

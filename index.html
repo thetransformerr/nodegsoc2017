@@ -37,7 +37,7 @@ tr:nth-child(even) {
 </div><h3> By Naveen Saini</h3></div>
  <div class="row text-center " style=" padding:10px; ">
      <h5>In this UI,I have taken the range into following text fields, and with Outliers Query button, the total no. of Outliers are displayed and top 100 outliers are appended into table.
-   I have implemented this UI, using MongoDB native driver for node.js, and have set up remote mongo database on this website <a href="https://mlab.com">MLab</a>, and hosted this Node.js script on <a href="https://heroku.com">Heroku</a>.All source files can be found into this <a href="">repository</a>.</h5>
+   I have implemented this UI, using MongoDB native driver for node.js, and have set up remote mongo database on this website <a href="https://mlab.com">MLab</a>, and hosted this Node.js script on <a href="https://heroku.com">Heroku</a>.All source files can be found into this <a href="https://github.com/thetransformerr/nodegsoc2017">repository</a>.</h5>
  </div>
  <hr>
   <div class="row" style="padding: 10px; padding-bottom: 20px; ">
@@ -116,7 +116,7 @@ tr:nth-child(even) {
     
           socket.on('delete',function(docs){
     	           $('#table').contents().remove();
-                 $('#result').append("<p>acknowledged: "+docs.acknowledged+" documents deleted: "+docs.deletedCount+"<br>range Used:(maxval: "+$('#maxval').val()+" minval: "+$('#minval').val()+" )</p>");
+                 $('#result').append("<p>acknowledged: "+docs.result.ok+" documents deleted: "+docs.message.deletedCount+"<br>range Used:(maxval: "+$('#maxval').val()+" minval: "+$('#minval').val()+" )</p>");
                  $('#total').contents().remove();
                  $('#outliers').contents().remove();
      	           $('#outliers').append('0');});
