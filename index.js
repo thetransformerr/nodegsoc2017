@@ -138,5 +138,5 @@ socket.on("outliers delete",function(data){
 });//ending of socket.on
 });//ending of io.on
 http.listen(port, function(){
-	console.log('and here we are, *:%d'port);
+	console.log('and here we are, *:%d',port);
 });
