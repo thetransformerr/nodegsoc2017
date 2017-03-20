@@ -1,0 +1,134 @@
+<html>
+<head>
+	<title>GSoC Task</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+#total,#outliers,#inrange{
+	width: 300px;
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="row text-center"><div class="page-header">
+  <h1>Quality Assurance in enviroCar<small style="padding-left:2px; "> Challenge for GSoC-2017</small></h1>
+</div><h3> By Naveen Saini</h3></div>
+ <div class="row text-center " style=" padding:10px; ">
+     <h5>In this UI,I have taken the range into following text fields, and with Outliers Query button, the total no. of Outliers are displayed and top 100 outliers are appended into table.
+   I have implemented this UI, using MongoDB native driver for node.js, and have set up remote mongo database on this website <a href="https://mlab.com">MLab</a>, and hosted this Node.js script on <a href="https://heroku.com">Heroku</a>.All source files can be found into this <a href="">repository</a>.</h5>
+ </div>
+ <hr>
+  <div class="row" style="padding: 10px; padding-bottom: 20px; ">
+     
+     <div class="col-md-4 pull-left" style="">
+       
+       <div class="row">
+         
+         <div class="input-group" style="padding:5px; ">
+             
+             <span class="input-group-addon" >max value</span>
+             <input type="text" class="form-control" placeholder="25" aria-describedby="basic-addon1" id="maxval">
+          
+          </div>
+          
+          <div class="input-group" style="padding:5px; "> 
+             
+             <span class="input-group-addon" >min value</span>
+             <input type="text" class="form-control" placeholder="5" aria-describedby="basic-addon2" id="minval">
+          
+          </div>
+          
+        </div>
+        <div class="row" style="padding-top: 5%">
+              <button class="btn btn-info btn-lg pull-left " type="button"  aria-expanded="false" style="padding:20px; padding-top: 5%">
+              Find outliers</button>
+              <button class="btn  btn-lg pull-right btn-danger " type="button"  aria-expanded="false" style="padding:20px; padding-top: 5%">
+              Delete outliers</button>
+        </div>
+      </div>
+      <div class="col-md-4 pull-right" style=" ">
+        <div class="row">
+              <h3><span class="label label-lg label-primary" >Total:<span class="label label-lg" style="margin-left: 5px; " id="total"></span></span>
+              <span class="label label-lg label-danger" >Outliers:<span class="label label-lg " style="margin-left: 5px; " id="outliers"></span></span></h3>
+        </div>
+      </div>
+    </div>
+    
+  <div class="row" style="padding-top: 5%" id="result">
+   <table>
+  <tr>
+    <th>Sr. No.</th>
+    <th>Length</th>
+    <th>Name </th>
+    <th>Description</th>
+  </tr>
+  </table>
+</div>
+</div>
+<script type="text/javascript">
+	   var socket = io.connect();
+     var count = 0;    
+          $('.btn-info').click(function(){
+		            socket.emit('outliers query',{max:$('#maxval').val() , min:$('#minval').val()});});
+          
+
+          $('.btn-danger').click(function(){
+                socket.emit('outliers delete',{max:$('#maxval').val() , min:$('#minval').val()})});
+    
+
+          socket.on('total',function(total){
+    	           $('#total').contents().remove();
+                 $('#total').append( total);});
+     
+
+          socket.on('outliers count',function(outlier){
+                 $('#outliers').contents().remove();
+     	           $('#outliers').append( outlier);});
+
+
+          socket.on('outliers',function(outliers){
+                 count=count+1;
+                 $('#table').contents(':gt(8)').remove();
+                 $("table").append("<tr><td>"+count+"</td><td>"+outliers.length+"</td><td>"+outliers.name+"</td><td>"+outliers.description+"</td></tr>");});
+    
+    
+          socket.on('delete',function(docs){
+    	           $('#table').contents().remove();
+                 $('#result').append("<p>acknowledged: "+docs.acknowledged+" documents deleted: "+docs.deletedCount+"<br>range Used:(maxval: "+$('#maxval').val()+" minval: "+$('#minval').val()+" )</p>");
+                 $('#total').contents().remove();
+                 $('#outliers').contents().remove();
+     	           $('#outliers').append('0');});
+
+
+          socket.on('remaining',function(count){
+                 $('#maxval').value('');
+                 $('#minval').value('');
+                 $('#total').append(count);});
+
+
+
+	</script>
+</body>
+</html>
