@@ -123,17 +123,19 @@ socket.on("outliers delete",function(data){
     io.sockets.emit('delete',docs);
 
     });//ending of tracks.deletemany
+   db.close();
  });//ending of mongoclient
  MongoClient.connect(url, function(err, db) {
    var tracks = db.collection('tracks');
    if(err) throw err;
    assert.equal(null, err);
+   var count=0;
    console.log("Connected successfully to server for count");
    tracks.count().then(function(count){
-   
-   io.sockets.emit('remaining',count);
+   io.sockets.emit('remained',count);
    console.log(count);
   });//ending of remaining count
+   db.close();
  });//ending of mongoclient
 });//ending of socket.on
 });//ending of io.on
