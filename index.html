@@ -128,7 +128,7 @@ tr:nth-child(even) {
                  $('#total').contents().remove();
                  $('#outliers').contents().remove();
                  $('#outliers').append('0');
-                 $('body').prepend("<div class=\"alert alert-success text-center\" role=\"alert\">"+docs+" Entries sucessfully deleted. Please refresh the page.Current range"+(parseFloat($('#maxval').val())+parseFloat($('#maxval').val())*0.4)+"-"+(parseFloat($('#minval').val())-parseFloat($('#minval').val())*0.4)+"</div>");
+                 $('body').prepend("<div class=\"alert alert-success text-center\" role=\"alert\">"+docs+" Entries sucessfully deleted. Please refresh the page.Current range of length is "+(parseFloat($('#maxval').val())+parseFloat($('#maxval').val())*0.4)+"-"+(parseFloat($('#minval').val())-parseFloat($('#minval').val())*0.4)+"</div>");
                  $('#minval').val("");
                  $('#maxval').val("");
 
