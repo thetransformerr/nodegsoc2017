@@ -121,24 +121,14 @@ socket.on("outliers delete",function(data){
    q[1]=q2;
    tracks.deleteMany({$or:q},{length:1,name:1,description:1}).then(function(docs){
     io.sockets.emit('delete',docs);
-
+    console.log(docs);
     });//ending of tracks.deletemany
    db.close();
  });//ending of mongoclient
- MongoClient.connect(url, function(err, db) {
-   var tracks = db.collection('tracks');
-   if(err) throw err;
-   assert.equal(null, err);
-   var count=0;
-   console.log("Connected successfully to server for count");
-   tracks.count().then(function(count){
-   io.sockets.emit('remained',count);
-   console.log(count);
-  });//ending of remaining count
-   db.close();
- });//ending of mongoclient
-});//ending of socket.on
+ });//ending of socket.on
 });//ending of io.on
+
+
 http.listen(port, function(){
 	console.log('and here we are, *:%d',port);
 });
