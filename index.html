@@ -120,10 +120,11 @@ tr:nth-child(even) {
     
           socket.on('delete',function(docs){
     	           $('#table').contents().remove();
-                 $('#result').append("<p>acknowledged: "+docs.result.ok+" documents deleted: "+docs.message.deletedCount+"<br>range Used:(maxval: "+$('#maxval').val()+" minval: "+$('#minval').val()+" )</p>");
                  $('#total').contents().remove();
                  $('#outliers').contents().remove();
-     	           $('#outliers').append('0');});
+                 $('#outliers').append('0');});
+                 $('#result').append(" documents deleted: "+docs.message.deletedCount+"<br>range Used:(maxval: "+$('#maxval').val()+" minval: "+$('#minval').val()+" )</p>");
+                 
 
 
           socket.on('remaining',function(count){
