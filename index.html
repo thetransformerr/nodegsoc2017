@@ -94,8 +94,6 @@ tr:nth-child(even) {
 <script type="text/javascript">
 	   var socket = io.connect();
      var count = 0; 
-     var tot =0;
-     var outl=0;   
           $('.btn-info').click(function(){
 		            socket.emit('outliers query',{max:$('#maxval').val() , min:$('#minval').val()});});
           
@@ -107,13 +105,14 @@ tr:nth-child(even) {
           socket.on('total',function(total){
     	           $('#total').contents().remove();
                  $('#total').append( total);
-                 tot=total;});
+                 });
+          
      
 
           socket.on('outliers count',function(outlier){
                  $('#outliers').contents().remove();
      	           $('#outliers').append( outlier);
-                 outl=outlier;
+                 
                   });
 
 
@@ -122,16 +121,27 @@ tr:nth-child(even) {
                  $('#table').contents(':gt(8)').remove();
                  $("table").append("<tr><td>"+count+"</td><td>"+outliers.length+"</td><td>"+outliers.name+"</td><td>"+outliers.description+"</td></tr>");});
     
-          var final=tot-outl;
+        
           socket.on('delete',function(docs){
     	           $('#table').contents().remove();
                  $('#table').append("<tr><th>Sr. No.</th><th>Length</th><th>Name</th><th>Description</th></tr>");
                  $('#total').contents().remove();
                  $('#outliers').contents().remove();
                  $('#outliers').append('0');
-                 $('#maxval').contents().remove();
-                 $('#minval').contents().remove();
-                 $('#total').append(final);});
+                 $('#maxval').val("");
+                 $('#minval').val("");
+                 socket.emit('total',{});
+                 $('body').prepend("<div class=\"alert alert-success\" role=\"alert\">"+docs+" Entries sucessfully deleted. Please refresh the page.</div>");
+                 $('.btn-danger').attr("disabled","disabled");
+                 $('.btn-info').attr("disabled","disabled");
+                $('#maxval').attr("disabled","disabled");
+                 $('#minval').attr("disabled","disabled");
+
+               });
+
+          socket.on('remained',function(count){
+                $('#total').append(count);
+          });
 
 
 
